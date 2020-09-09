@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "Purchase";
+}
+
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>夹具管理</cite></a>
+        <a><cite>采购及报修</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+
+@*search*@
+
+<div class="layui-form-item">
+    <label class="layui-form-label" style="width:auto">
+        夹具名称
+    </label>
+    <div class="layui-input-inline">
+        <input class="layui-input" placeholder="请输入夹具名称" />
+    </div>
+
+    <label class="layui-form-label" style="width:auto">
+        入库时间
+    </label>
+    <div class="layui-inline">
+        <input type="text" class="layui-input" id="date" placeholder="请选择时间">
+    </div>
+    <script>
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            //单控件
+            laydate.render({
+                elem: '#date'
+
+                , isInitValue: false
+                , format: 'yyyyMMdd'
+                , ready: function (date) {
+                    console.log(date);
+                }
+                , done: function (value, date, endDate) {
+                    console.log(value, date, endDate);
+                }
+            });
+        });
+    </script>
+    <button class="layui-btn" style="background-color:#1990FF">查询</button>
+
+
+
+</div>
+<br />
+
+@*table*@
+<div class="layui-btn-group inoutTable" style="margin-left:20px;">
+    <button class="layui-btn layui-btn-radius" data-type="in" style="background-color:#FF9800;margin-left:20px;"><i class="layui-icon layui-icon-addition"></i>采购申请</button>
+    <button class="layui-btn layui-btn-radius" data-type="out" style="background-color:#FF5157;"><i class="layui-icon layui-icon-util"></i>报修申请</button>
+</div>
+<br />
+<br />
+<br />
+<div class="layui-form-item" style="margin-left:20px;">
+    <table class="layui-table" lay-filter="inout" lay-data="{width: 1000, height:330, url:'', page:true, id:'inout'}" style="margin-left:-10px;">
+        <thead>
+            <tr>
+                <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                <th lay-data="{field:'id', width:80, sort: true, fixed: true}">ID</th>
+                <th lay-data="{field:'name', width:80}">名称</th>
+                <th lay-data="{field:'family', width:80, sort: true}">Family</th>
+                <th lay-data="{field:'model', width:80}">Model</th>
+                <th lay-data="{field:'detail', width:160}">描述</th>
+                <th lay-data="{field:'time', width:100, sort: true}">入库时间</th>
+                <th lay-data="{field:'state', width:80}">状态</th>
+                <th lay-data="{field:'operate', width:135}">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+
+<div id="pagesplit" style="margin:auto auto auto 100px;"></div>
+
+<script id="barInout" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(inout)', function (obj) {
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('ID：' + data.id + ' 的查看操作');
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.alert('编辑行：<br>' + JSON.stringify(data))
+            }
+        });
+
+
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+</script>
+
+<script>
+    layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage
+            , layer = layui.layer;
+
+
+
+        //完整功能
+        laypage.render({
+            elem: 'pagesplit'
+            , count: 100
+            , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+            , jump: function (obj) {
+                console.log(obj)
+            }
+        });
+
+
+    });
+</script>
+
+

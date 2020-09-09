@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "Scrap";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>报废</cite></a>
+        <a><cite>报废申请</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+
+
+<div class="layui-inline" id="searchKeyword" style="margin-left:5px;">
+    <input type="text" autocomplete="off" id="keyword" placeholder="夹具代码..." class="layui-input">
+</div>
+<div class="layui-btn-group inoutTable">
+    <button id="searchScrapOrder" data-type="reload" class="layui-btn layui-btn-radius demo" style="background-color:#009688;margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询申请</button>
+    <button id="addScrapOrder" class="layui-btn layui-btn-radius demo" style="background-color:#FF9800;margin-left:20px;"><i class="layui-icon layui-icon-addition"></i>提交申请</button>
+    <button id="batchDel" class="layui-btn layui-btn-radius" style="background-color:#FF5157;margin-left:20px;"><i class="layui-icon layui-icon-subtraction"></i>删除申请</button>
+</div>
+<br />
+
+<script type="text/html" id="tbar">
+    @*<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="Edit"><i class="layui-icon"></i> 修改</button>*@
+    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del"><i class="layui-icon"></i> 撤销</button>
+</script>
+
+<style>
+    .layui-table-cell .layui-form-checkbox[lay-skin="primary"] {
+        transform: translateY(20%);
+    }
+</style>
+
+@*数据表*@
+<table class="layui-table" id="scrapOrderTable" lay-filter="jsTabel"></table>
+@Styles.Render("~/Content/css")
+<script type="text/javascript">
+
+    layui.use('table', function () {
+        var table = layui.table;
+        var $ = layui.$;
+        var form = layui.form;
+        table.render({
+            elem: '#scrapOrderTable'
+            , height: 510
+            , url: "@Url.Action("GetScrapOrderList","ToolManage")"//数据接口
+            , page: true //开启分页
+             , where: { keyword: $("#keyword").val() }
+            , cols: [[
+                { type: "checkbox" },
+                { field: 'proposerName', title: '申请人', width: 150, sort: true },
+                //{ field: 'proposerId', title: '申请人id', width: 150, sort: true },
+                //已被code代替
+                //{ field: 'typeId', title: '夹具种类id', width: 150, sort: true },
+                { field: 'code', title: '夹具代码', width: 150, sort: true },
+                { field: 'seqId', title: '夹具序列号', width: 80, sort: true },
+                { field: 'supervisorId', title: '审核人id', width: 150, sort: true },
+                { field: 'managerId', title: '经理id', width: 150, sort: true },
+                { field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+                { field: 'description', title: '描述', width: 150, sort: true },
+                {
+                    field: 'state', title: '订单状态', width: 150, sort: true, templet: function (obj) {
+                        if (obj.state == -1) {
+                            return '已提交申请';
+                        } else if (obj.state == 0) {
+                            return '已通过初审';
+                        } else if (obj.state == 1) {
+                            return '已通过终审';
+                        } else if (obj.state == 2) {
+                            return '未通过初审';
+                        } else if (obj.state == 3) {
+                            return '未通过终审';
+                        }
+
+                    }
+                },
+                { title: '操作', width: 100, toolbar: "#tbar" }
+            ]]
+        });
+
+        $("#addScrapOrder").on("click", function () {
+            layer.open({
+                type: 2,
+                content: '@Url.Action("ScrapOrderDetail","ToolManage")',
+                title: "添加类别",
+                area: ["500px", "500px"],
+                end: function () { // layui 关闭弹框时的回调函数
+                    $("#searchScrapOrder").click();
+                }
+            })
+        })
+
+        $("#searchScrapOrder").on("click", function () {
+            console.log($("#keyword").val());
+            table.reload("scrapOrderTable", {
+                url:"@Url.Action("GetScrapOrderList","ToolManage")",
+                page: { curr: 1 },
+                where: {
+                    keyword:$("#keyword").val()
+                }
+            });
+        })
+
+        $("#batchDel").on("click", function () {
+            var selectedobjs = table.checkStatus("scrapOrderTable").data;
+
+            var scrapIds = selectedobjs.map(function (item) {
+                return item.scrapId;
+            })
+
+
+            if (!scrapIds || scrapIds.length <= 0) {
+                    return false;
+            }
+
+
+                layer.confirm("确认批量删除吗？", function () {
+
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                      $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("BatchDelScrapOrders","ToolManage")",
+                        data: { scrapIds: scrapIds },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                $("#searchScrapOrder").click();
+                                layer.msg(result.Message, {icon:1});
+                            }
+                            else
+                            {
+                                layer.msg(result.Message, { icon:5 });
+                            }
+                        }
+                    })
+                })
+            })
+
+        table.on("tool(jsTabel)", function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            @*if (event == "Edit") {
+                layer.open({
+                    type: 2,
+                    content: '@Url.Action("PurchaseOrderDetail")?purchaseId=' + data.purchaseId,
+                    title: "修改采购申请",
+                    area: ["500px", "500px"],
+                    end: function () { // layui 关闭弹框时的回调函数
+                        $("#searchPurchaseOrder").click();
+                    }
+                })
+
+            } else*@ if (event = "Del") {
+                var scrapId = data.scrapId;
+                layer.confirm("确认删除吗？", function () {
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DelScrapOrder","ToolManage")",
+                        data: { scrapId: scrapId },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                $("#searchScrapOrder").click();
+                                layer.msg(result.Message, { icon: 1 });
+                            }
+                            else {
+                                layer.msg(result.Message, { icon: 5 });
+                            }
+                        }
+                    })
+                })
+
+            }
+        })
+    });
+</script>
+<div id="pagesplit" style="margin:auto auto auto 200px;"></div>
+
+
+
+
+
+
+

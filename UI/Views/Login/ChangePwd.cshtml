@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "ChangePwd";
+}
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>修改密码</cite></a>
+    </span>
+</div>
+<br />
+<br />
+
+@*修改密码*@
+
+<div class="layui-container">
+    <div class="layui-card">
+        <div class="layui-card-header" style="background-color:#F0F0F0;">
+            密码重置
+        </div>
+        <div class="layui-card-body">
+            <br />
+            <br />
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">密码：</label>
+                    <div class="layui-input-block">
+                        <input name="pwd" class="layui-input" type="password" placeholder="请输入密码" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">再次输入：</label>
+                    <div class="layui-input-block">
+                        <input name="repwd" class="layui-input" type="password" placeholder="请再次输入密码" autocomplete="off" lay-verify="number">
+                    </div>
+                </div>
+
+
+            </form>
+            <br />
+            <br />
+            <br />
+            @*btn*@
+            <div style="margin-left:150px">
+                <button class="layui-btn layui-btn-normal layui-btn-radius demo" type="button" data-type="confirm">确定</button>
+                <button class="layui-btn layui-btn-primary layui-btn-radius demo" type="button" data-type="cancel">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+

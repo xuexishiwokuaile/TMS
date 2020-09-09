@@ -1,0 +1,627 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 工夹具全寿命智能管理系统</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/layui")
+
+
+
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo" style="color:white">工夹具全寿命智能管理系统</div>
+            @*<input type="hidden" value="@Session["userInfo"]" id="thisUserInfo" />*@
+
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;" id="userName" title="用户名">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>@Html.ActionLink("基本资料", "Person", "Home")</dd>
+                        <dd>@Html.ActionLink("返回首页", "Index", "Home")</dd>
+                        @*<dd><a href="">安全设置</a></dd>*@
+                    </dl>
+                </li>
+                <li class="layui-nav-item">@Html.ActionLink("退出登录", "Login", "Login")</li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree layui-bg-cyan layui-inline" id="side-menu" lay-filter="side_menu">
+
+
+                    @*<li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("夹具类表", "Class", "Home")</dd>
+                                <dd>@Html.ActionLink("出入库管理", "Inout", "Home")</dd>
+                                <dd>@Html.ActionLink("采购及报修", "Purchase", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-email"></i> 工单管理</a>
+                            <dl class="layui-nav-child">
+                                <li  class="layui-nav-item">
+                                    <a href="javascript:;"><i class="layui-icon layui-icon-email"></i> 工单管理</a>
+                                    <dl class="layui-nav-child">
+                                        <dd >@Html.ActionLink("处理工单", "Handle", "Home")</dd>
+                                        <dd>@Html.ActionLink("审核工单", "Verify", "Home")</dd>
+                                    </dl>
+                                </li>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-group"></i>  管理员管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("人员列表", "Admin", "Home")</dd>
+                            </dl>
+                        </li>*@
+
+                    @*基础用户*@
+                    @*<li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list">@Html.ActionLink("个人信息", "Person", "Home")</dd></dl></li>*@
+
+
+                    @*初级用户*@
+                    @*<li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed "><a href="javascript:;"><i class="layui-icon layui-icon-table"></i>工单管理 </a><dl class="layui-nav-child"><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-util"></i>报修 </a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list">@Html.ActionLink("报修申请", "Repair", "Home")</dd></dl></li><dd class="layui-nav-itemed layui-list">@Html.ActionLink("出入库管理", "Inout", "Home")</dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list">@Html.ActionLink("个人信息", "Person", "Home")</dd></dl></li>*@
+
+                    @*高级用户*@
+                    @*
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("夹具信息管理", "BasicInfo", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-table"></i>工单管理 </a>
+                            <dl class="layui-nav-child">
+                            <li class="layui-nav-item layui-nav-itemed">
+                                <a href="javascript:;"><i class="layui-icon layui-icon-util"></i>报修 </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报修申请", "Repair", "Home")</dd>
+                                    <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理报修", "HandleRepair", "Home")</dd>
+                                </dl>
+                            </li>
+                            <li class="layui-nav-item layui-nav-itemed">
+                                <a href="javascript:;"><i class="layui-icon layui-icon-cart-simple"></i>采购 </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed layui-list">@Html.ActionLink("采购申请", "Purchase", "Home")</dd>
+                                </dl>
+                            </li>
+                            <li class="layui-nav-item layui-nav-itemed">
+                                <a href="javascript:;"><i class="layui-icon layui-icon-snowflake"></i>报废 </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报废申请", "Scrap", "Home")</dd>
+                                </dl>
+                            </li>
+
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("出入库管理", "Inout", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                            <dl class="layui-nav-child">
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                            </dl>
+                        </li>*@
+                    @*监管员*@
+                    @*<li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a>
+                        <dl class="layui-nav-child">
+                        <dd>@Html.ActionLink("夹具信息管理", "BasicInfo", "Home")</dd>
+                        <dd>@Html.ActionLink("夹具类管理", "Class", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-table"></i>工单管理 </a>
+                        <dl class="layui-nav-child">
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-util"></i>报修 </a>
+                        <dl class="layui-nav-child">
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报修申请", "Repair", "Home")</dd>
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理报修", "HandleRepair", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-cart-simple"></i>采购 </a>
+                        <dl class="layui-nav-child">
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("采购申请", "Purchase", "Home")</dd>
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理采购", "HandlePurchase", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-snowflake"></i>报废 </a>
+                        <dl class="layui-nav-child">
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报废申请", "Scrap", "Home")</dd>
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理报废", "HandleScrap", "Home")</dd>
+                        </dl>
+                        </li>
+
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("出入库管理", "Inout", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                        <dl class="layui-nav-child">
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                        </dl>
+                        </li>*@
+
+                    @*Workcell经理*@
+                    @*
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("夹具信息管理", "BasicInfo", "Home")</dd>
+                                <dd>@Html.ActionLink("夹具类管理", "Class", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-table"></i>工单管理 </a>
+                            <dl class="layui-nav-child">
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-util"></i>报修 </a>
+                            <dl class="layui-nav-child">
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报修申请", "Repair", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理报修", "HandleRepair", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-cart-simple"></i>采购 </a>
+                            <dl class="layui-nav-child">
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("采购申请", "Purchase", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理采购", "HandlePurchase", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("批准采购", "RatifyPurchase", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-snowflake"></i>报废 </a>
+                            <dl class="layui-nav-child">
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("报废申请", "Scrap", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("处理报废", "HandleScrap", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("批准报废", "RatifyScrap", "Home")</dd>
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("批准报废", "RatifyScrap", "Home")</dd>
+
+                                **********************************************<dd>@Html.ActionLink("批准采购", "RatifyPurchase", "PurchaseOrder")</dd>
+
+
+                        <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="/Home/Data">实时数据</a></dd>
+                                <dd><a href="/Home/Analysis">智能分析</a></dd></dl></li>
+                        <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="/Home/Person">个人信息</a></dd></dl></li>
+                        <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-group"></i>管理员管理</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="/Home/Admin">人员列表</a></dd>
+                                <dd><a href="/Home/WorkCell">部门管理</a></dd>
+                            </dl>
+                        </li>
+
+                        <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a><dl class="layui-nav-child"><dd><a href="/Home/Data">实时数据</a></dd><dd><a href="/Home/Analysis">智能分析</a></dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a><dl class="layui-nav-child"><dd><a href="/Home/BasicInfo">夹具信息管理</a></dd><dd><a href="/Home/Class">夹具类管理</a></dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-table"></i>工单管理 </a><dl class="layui-nav-child"><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-util"></i>报修 </a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list"><a href="/Home/Repair">报修申请</a></dd><dd class="layui-nav-itemed layui-list"><a href="/Home/HandleRepair">处理报修</a></dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-cart-simple"></i>采购 </a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list"><a href="/Home/Purchase">采购申请</a></dd><dd class="layui-nav-itemed layui-list"><a href="/Home/HandlePurchase">处理采购</a></dd><dd class="layui-nav-itemed layui-list"><a href="/Home/RatifyPurchase">批准采购</a></dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-snowflake"></i>报废 </a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list"><a href="/Home/Scrap">报废申请</a></dd><dd class="layui-nav-itemed layui-list"><a href="/Home/HandleScrap">处理报废</a></dd><dd class="layui-nav-itemed layui-list"><a href="/Home/RatifyScrap">批准报废</a></dd></dl></li><dd class="layui-nav-itemed layui-list"><a href="/Home/Inout">出入库管理</a></dd></dl></li><li class="layui-nav-item layui-nav-itemed"><a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a><dl class="layui-nav-child"><dd class="layui-nav-itemed layui-list"><a href="/Home/Person">个人信息</a></dd></dl></li>
+
+
+                        ****************************************************************************************
+
+
+                            </dl>
+                        </li>
+
+                        <dd class="layui-nav-itemed layui-list">@Html.ActionLink("出入库管理", "Inout", "Home")</dd>
+                        </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                            <dl class="layui-nav-child">
+                                <dd class="layui-nav-itemed layui-list">@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                            </dl>
+                        </li>*@
+
+                    @*系统管理员*@
+
+                    @*<li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                                <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                            </dl>
+                        </li>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:;"><i class="layui-icon layui-icon-group"></i>  管理员管理</a>
+                            <dl class="layui-nav-child">
+                                <dd>@Html.ActionLink("人员列表", "Admin", "Home")</dd>
+                            </dl>
+                        </li>*@
+
+                </ul>
+            </div>
+
+
+
+
+        </div>
+
+        <div class="layui-body" style="position:absolute;">
+            <!-- 内容主体区域 -->
+
+            @RenderBody()
+
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            @DateTime.Now.Year - 工夹具全寿命智能管理系统
+        </div>
+    </div>
+
+    <script>
+
+
+        layui.use('element', function () {
+            var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+            var $ = layui.jquery;
+            //监听导航点击
+
+
+
+            $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetModuleList","User")",
+            success: function (data) {
+                var str = data.strHtml
+                $('.layui-nav-tree').append(str);
+                console.log(str)
+                element.init()
+            }
+
+
+            });
+
+            $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetUserName","User")",
+            success: function (result) {
+                var name = result.data
+                $("#userName").append(name);
+                console.log(name)
+
+            }
+
+
+            });
+
+            element.on('nav(side-menu)', function (elem) {
+            console.log(elem)
+            alert(elem.text());
+            })
+
+
+        })
+
+
+    </script>
+
+</body>
+
+@*添加人员*@
+<div id="userUpdate" class="userUpdate" style="display: none">
+    <form class="layui-form" style="margin-top: 15px;" id="userForm" lay-filter="userForm">
+        <div class="layui-form-item">
+            @*存放id，用来区分是新建还是修改*@
+            <div class="layui-inline" style="display: none;">
+                <input type="hidden" name="id">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">级别</label>
+            <div class="layui-input-inline">
+                <select id="classification" name="classification" class="classification">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" id="male" name="sex" value="1" title="男" checked>
+                <input type="radio" id="female" name="sex" value="0" title="女">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="phone" lay-verify="required|phone" autocomplete="off"
+                       class="layui-input tel" id="tel_yh">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-inline">
+                <input type="text" name="email" autocomplete="off" lay-verify="required|email" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">WorkCell</label>
+            <div class="layui-input-inline">
+                <select id="workcell" name="workcellid" class="workcell">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">家庭住址</label>
+            <div class="layui-input-inline">
+                @*可以为空*@
+                <input type="text" name="apartment" autocomplete="off" class="layui-input" placeholder="选填">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn u-btn layui-btn-sm layui-btn-normal u-btn-center" id="saveAndSubmit" type="button"
+                        lay-submit lay-filter="saveAndSubmit">
+                    保存并提交
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+@*修改用户密码*@
+<div id="userPwdChange" class="userPwdChange" style="display: none">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:100px">原密码：</label>
+            <div class="layui-input-block">
+                <input name="expwd" class="layui-input" type="password" placeholder="请输入原密码" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:100px">新密码：</label>
+            <div class="layui-input-block">
+                <input name="pwd" class="layui-input" type="password" placeholder="请更改后的密码" autocomplete="off">
+            </div>
+        </div>
+    </form>
+</div>
+@*修改邮箱*@
+<div id="EmailChangeDiv" style="margin-top: 10px; display: none ">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:auto">邮箱</label>
+            <div class="layui-input-block">
+                <input name="email" class="layui-input" lay-verify="required" type="text" placeholder="请输入您要绑定的邮箱号" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label" style="width:auto">验证码</label>
+                <div class="layui-input-block ">
+                    <div class="layui-inline">
+                        <input name="EVerifyCode" class="layui-input" type="text" placeholder="请输入验证码" autocomplete="off">
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-sm layui-btn-primary" id="sendECode" type="button"
+                                lay-submit lay-filter="sendECode">
+                            发送验证码
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+@*已更新--2020.4.17*@
+@*添加部门*@
+<div id="workcellUpdate" class="workcellUpdate" style="display: none">
+    <form class="layui-form" style="margin-top: 15px;" id="workcellForm" lay-filter="workcellForm">
+        <div class="layui-form-item">
+            @*存放id，用来区分是新建还是修改*@
+            <div class="layui-inline" style="display: none;">
+                <input type="hidden" name="id">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <label class="layui-form-label">部门经理:</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门</label>
+            <div class="layui-input-inline">
+                <select id="sworkcell" name="workcell" class="sworkcell" lay-filter="sworkcell">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户</label>
+            <div class="layui-input-inline">
+                <select id="username" name="userid" class="username">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn u-btn layui-btn-sm layui-btn-normal u-btn-center" id="Submit" type="button"
+                        lay-submit lay-filter="Submit">
+                    保存并提交
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+@*添加夹具信息*@
+<div id="newToolDetail" class="newToolDetail" style="display: none">
+    <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="toolId">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">夹具类选择</label>
+            <div class="layui-input-inline">
+                <select name="toolType" lay-filter="type" id="type" lay-verify="" autocomplete="off">
+                    <option value="">所有夹具类</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+        </div>
+        <div class="layui-form-item">
+                <label class="layui-form-label">代码</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="code" lay-verify="required" placeholder="请输入夹具代码" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">请务必填写夹具代码</div>
+            </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">序列号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="seqId" lay-verify="required" placeholder="请输入夹具序列号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请务必填写夹具序列号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="billNo" lay-verify="" placeholder="请输入夹具订单号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具订单号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">经办人</label>
+            <div class="layui-input-inline">
+                <input type="text" name="operatorId" lay-verify="" placeholder="请输入操作人ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请输入经办人ID</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">入库时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="regDate" lay-verify="" placeholder="请输入夹具入库时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具入库时间</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">生产时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="proDate" lay-verify="" placeholder="请输入夹具生产时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具生产时间</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">存放库位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="location" lay-verify="" placeholder="请输入夹具存放库位" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具生产时间</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">使用次数</label>
+            <div class="layui-input-inline">
+                <input type="text" name="usedCount" lay-verify="" placeholder="请输入使用次数" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写保养点检周期</div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-upload">
+                <label class="layui-form-label">上传图片</label>
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-upload">
+                <div class="layui-upload-list">
+                    <label class="layui-form-label">预览区</label>
+                    <img class="layui-upload-img" id="demo2" style="width:300px;height:auto;">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button onclick="parent.layer.closeAll()" class="layui-btn layui-btn-primary">关闭</button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+</div>
+</html>

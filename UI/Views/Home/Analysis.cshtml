@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Analysis";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>预警管理</cite></a>
+        <a><cite>智能分析</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+<div class="layui-container">
+    <h3 style="text-align:center:">预计分布</h3>
+    <div id="container"></div>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=0yFU0feAs4ZB2MFxUpMbHOdDzfNQ0Tci"></script>
+    
+
+    <script type="text/javascript">
+        var map = new BMap.Map("container"); // 创建地图实例
+        var point = new BMap.Point(113.631349, 34.753488); // 创建点坐标 郑州市坐标113.631349, 34.753488
+        map.centerAndZoom(point, 15); // 初始化地图，设置中心点坐标和地图级别
+        map.enableScrollWheelZoom();
+        map.addControl(new BMap.NavigationControl());
+        map.addControl(new BMap.ScaleControl());
+        map.addControl(new BMap.OverviewMapControl());
+        map.addControl(new BMap.MapTypeControl());
+        var dw = new BMap.GeolocationControl({ enableAutoLocation: true });//自动定位控件
+        map.addControl(dw);
+        var dwxx = dw.GeolocationControl;
+        dw.addEventListener("locationSuccess", function () {
+            alert(dwxx);
+        });
+        dw.addEventListener("locationError", function () {
+            alert("定位失败");
+        });
+
+        var marker = new BMap.Marker(new BMap.Point(113.631349, 34.753488)); // 创建标注
+        map.addOverlay(marker);
+    </script>
+
+</div>

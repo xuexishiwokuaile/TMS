@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Handle";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>工单管理</cite></a>
+        <a><cite>处理工单</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="font-size:20px">显示:</label>
+        <div class="layui-input-block">
+            <input name="all" title="全部" type="checkbox" checked="">
+            <input name="wait" title="待处理" type="checkbox">
+            <input name="done" title="已处理" type="checkbox">
+        </div>
+    </div>
+</form>
+
+<br />
+<br />
+
+
+<div class="layui-btn-group" style="margin-left:20px;">
+    <button class="layui-btn layui-btn-radius" data-type="in" style="background-color:#FF9800;margin-left:20px;"><i class="layui-icon layui-icon-addition"></i>标记为已处理</button>
+    <button class="layui-btn layui-btn-radius" data-type="out" style="background-color:#FF5157;"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+</div>
+<br />
+<br />
+
+
+<div class="layui-form-item" style="margin-left:20px;width:1000px;">
+    <table class="layui-table" lay-filter="handle" style="margin-left:100px;width:auto;" id="test"></table>
+</div>
+
+<script id="handleState" type="text/html">
+    <input type="checkbox" name="handle" value="" lay-skin="switch" lay-text="未处理|已处理" lay-filter="handleState">
+</script>
+
+<script id="btnEdit" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test'
+            , url: '/demo/table/user/'
+            , cols: [[
+                { type: 'checkbox' }
+                , { field: 'people', title: '申请人', width: 80 }
+                , { field: 'theme', title: '主题' }
+                , { field: 'time', title: '申请时间', sort: true }
+                , { field: 'detail', title: '描述', width: 100, sort: true }
+                , { field: 'handleState', title: '状态', width: 85, templet: '#handleState' }
+                , { field: 'edit', title: '编辑', width: 80, templet: '#btnEdit' }
+            ]]
+            , page: true
+        });
+
+        //监听状态操作
+        form.on('checkbox(handleState)', function (obj) {
+            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+        });
+    });
+</script>
+
+

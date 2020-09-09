@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "PurchaseOrderDetail";
+    Layout = null;
+}
+
+@Styles.Render("~/Content/css")
+    <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="purchaseId">
+            </div>
+        </div>
+        @*<div class="layui-form-item">
+            <label class="layui-form-label">夹具类选择</label>
+            <div class="layui-input-inline">
+                <select name="toolType" lay-filter="type" id="type" lay-verify="" autocomplete="off">
+                    <option value="">所有夹具类</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+        </div>*@
+        <div class="layui-form-item">
+            <label class="layui-form-label">夹具类选择</label>
+            <div class="layui-input-inline">
+                <select id="toolType" name="toolType" class="toolType" lay-filter="toolType">
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数量</label>
+            <div class="layui-input-inline">
+                <input type="text" name="purchaseNum" lay-verify="required" placeholder="1" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请务必填写需要夹具数量</div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button onclick="parent.layer.closeAll()" class="layui-btn layui-btn-primary">关闭</button>
+            </div>
+        </div>
+    </form>
+@Scripts.Render("~/bundles/layui")
+<script type="text/javascript">
+    layui.use(["form"], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate,
+            $ = layui.$;
+        form.render();
+
+
+        form.on("submit(sub)", function (obj) {
+            var purchase = obj.field;
+            console.log(purchase);
+            layer.load(5, { shade: [0.5, "#5588AA"] });
+            $.ajax({
+                type: "POST",
+                data: {
+                    purchase: purchase
+                },
+                url: "@Url.Action("SubPurchaseOrderDetail","ToolManage")",
+                success: function (result) {
+                    if (result.Success) {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                        parent.layer.msg(result.Message, { icon: 1 });
+                    }
+                    else {
+                        parent.layer.msg(result.Message, { icon: 5 });
+                    }
+                }
+            })
+        });
+
+        @*form.on('select(type)', function (data) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelectToolTypeCode","ToolManage")",//从数据库查询现有的夹具类
+                dataType:"json",
+                success: function (result) {
+                    //console.log(result.data);
+                    //第一个是索引，第二个是每项
+                    $.each(result.data, function (index, item) {
+                        //console.log(item);
+                        $('#type').append("<option value= '" + item.typeId + "'>" + item.code + "</option>");
+                        //$('#type').append(new Option(item.code));//往下拉菜单里添加元素
+                    })
+                    form.render("select");//菜单渲染
+                }
+            })
+
+            //得到id
+            console.log(data.value);
+
+        });*@
+        layer.ready(function (data) {
+        //新加载列表
+            $.ajax({
+                type: "GET",
+                async: false,//同步进行
+                url: "@Url.Action("SelectToolTypeCodeList","ToolManage")",
+                success: function (data) {
+
+                    toolTypeList = data;
+                
+                    strHtml = ``
+                    for (let i = 0; i < toolTypeList.length; i++) {
+                        strHtml += `<option value="${toolTypeList[i].typeId}">${toolTypeList[i].code}</option>`
+                    }
+                    $("#toolType").append(strHtml);
+                    form.render();
+                    //加载对应部门的用户
+                }
+            })
+            console.log(data.value);
+
+        });
+
+        var purchase = '@Html.Raw(ViewBag.purchase)';
+
+    })
+</script>
+
+
+

@@ -1,0 +1,281 @@
+﻿
+@{
+    ViewBag.Title = "Person";
+}
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>个人管理</cite></a>
+        <a><cite>个人信息</cite></a>
+    </span>
+</div>
+<br />
+<br />
+
+<div class="layui-container">
+    <div class="layui-card">
+        <div class="layui-card-header" style="background-color:#F0F0F0;">
+            个人信息
+        </div>
+        <div class="layui-card-body" >
+            <br />
+            <br />
+
+            <form class="layui-form" action=""id="userDetail">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">姓名：</label>
+                        <div class="layui-input-block">
+                            <input name="name" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                        </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">Workcell：</label>
+                    <div class="layui-input-block">
+                        <input name="workcell" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">E-mail：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-inline">
+                            <input name="email" class="layui-input" type="text" autocomplete="off" lay-verify="required|email">
+                        </div>
+                        <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="changeEmail">修改</button>
+                    </div>
+                    </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">
+                        手机号：
+                    </label>
+                    <div class="layui-input-block">
+                        <input name="phone" class="layui-input" type="text" autocomplete="off" lay-verify="required|phone">
+                    </div>
+                </div>
+                @*<div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">
+                        性别
+                    </label>
+                    <div class="layui-input-block">
+                        <input name="gender" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>*@
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">
+                    住址:
+                </label>
+                <div class="layui-input-block">
+                    <div class="layui-inline">
+                        <input name="apartment" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                    </div>
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="changeApartment">修改</button>
+                </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">
+                        职位:
+                    </label>
+                    <div class="layui-input-block">
+                        <input name="classification" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                    </div>
+                </div>
+            </form>
+
+            <br />
+            <br />
+            <br />
+            @*btn*@
+        <div style="text-align:center">
+            <button class="layui-btn layui-btn-normal layui-btn-radius demo" type="button" id="changePwd">更改密码</button>
+            
+        </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer,
+            form = layui.form,
+            $ = layui.jquery;
+            $(function () {
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetUserDetail","User")",
+                    success: function (data) {
+                        console.log(data)
+                        $('#userDetail input[ name=\'name\' ] ').val(data.name) 
+                        //$('#userDetail input[ name=\'gender\' ] ').val() = data.gender;
+                        $('#userDetail input[ name=\'phone\' ] ').val( data.phone)
+                        $('#userDetail input[ name=\'workcell\' ] ').val(data.workcellname) 
+                        $('#userDetail input[ name=\'apartment\' ] ').val(data.apartment)
+                        $('#userDetail input[ name=\'email\' ] ').val(data.email) 
+                        $('#userDetail input[ name=\'classification\' ] ').val(data.classification) 
+
+                        $('#userDetail input[ name=\'name\' ] ').attr("disabled",true)
+                        $('#userDetail input[ name=\'phone\' ] ').attr("disabled",true)
+                        $('#userDetail input[ name=\'apartment\' ] ').attr("disabled",true)
+                        $('#userDetail input[ name=\'email\' ] ').attr("disabled",true)
+                        $('#userDetail input[ name=\'classification\' ] ').attr("disabled",true)
+                        $('#userDetail input[ name=\'workcell\' ] ').attr("disabled",true)
+                        form.render()
+                    }
+                })
+            })
+            
+        
+
+        //修改密码
+        $("#changePwd").on('click', function () {
+            layer.open({
+                type: 1,
+                area: ['400px', '200px'],
+                shadeClose: true, //点击遮罩关闭
+                title: '更改密码',
+                content: $('#userPwdChange'),
+                btn: ['确认修改'],
+                btnAlign: 'c',
+                btn1: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("pwdChange","User")",
+                        data:
+                        {
+                            expwd: $('#userPwdChange input[ name=\'expwd\' ] ').val(),
+                            pwd: $('#userPwdChange input[ name=\'pwd\' ] ').val()
+                        },
+                        success: function (result) {
+                            alert(result.msg)
+                            if (result.success) {
+                                window.location.href ="@Url.Action("Login","Login")" 
+                            }
+                            
+                        }
+                    })
+                }, end: function () {
+                    $('#userPwdChange input[ name=\'expwd\' ] ').val("");
+                    $('#userPwdChange input[ name=\'pwd\' ] ').val("");
+                    form.render()
+                }
+            })
+        })
+        //修改地址
+        $("#changeApartment").on('click', function () {
+            layer.open({
+                type: 1,
+                area: ['400px', '200px'],
+                shadeClose: true, //点击遮罩关闭
+                title: '更改住址',
+                content: `<div class="layui-form-item" id="updateApartment" class="margin-top: 10px">
+                    <label class="layui-form-label" style="width:100px">住址：</label>
+                        <div class="layui-input-block">
+                            <input name="apartment" class="layui-input" type="text" autocomplete="off" lay-verify="required">
+                        </div>
+                </div>`,
+                btn: ['确认修改'],
+                btnAlign: 'c',
+                btn1: function (layero, index) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("apartmentChange","User")",
+                        data:
+                        {
+                            apartment: $('#updateApartment input[ name=\'apartment\' ] ').val(),
+                        },
+                        success: function (result) {
+                            alert(result.msg)
+                            if (result.success) {
+                                $('#userDetail input[ name=\'apartment\' ] ').val($('#updateApartment input[ name=\'apartment\' ] ').val())
+                                form.render();
+                            }
+                            layer.close(layer.index)
+                        }
+
+                    })
+
+                }
+                , end: function () {
+                    $('#updateApartment input[ name=\'apartment\' ] ').val("")
+                    form.render();
+                }
+
+            })
+        })
+
+        
+        //修改邮箱
+        $("#changeEmail").on('click', function () {
+            layer.open({
+                type: 1,
+                area: ['400px', '400px'],
+                shadeClose: true, //点击遮罩关闭
+                title: '修改邮箱',
+                content: $('#EmailChangeDiv'),
+                btn: ['确认修改'],
+                btnAlign: 'c',
+                success: function () {
+                    //点击发送验证码
+                    form.on('submit(sendECode)', function (obj) {
+                        var email = $('#EmailChangeDiv input[ name=\'email\' ] ').val();
+                        if (email == ""||email==null) {
+                                    //发送验证码
+                             alert("请输入邮箱号")
+                        }
+                        else
+                        {
+                            //判断该账号是否存在
+                            $.ajax({
+                                type: "POST",
+                                url: "@Url.Action("SendCode","User")",
+                                data: {
+                                    email: email
+                                },
+                                success: function (result) {
+                                    if (result.code == 0) {
+                                        alert(result.msg)
+                                    }
+                                    else {
+
+                                        alert(result.msg)
+                                    }
+                                }
+
+                            }) 
+                        }
+                 });
+
+                },
+                btn1: function (layero, index) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("emailChange","User")",
+                        data:
+                        {
+                            email: $('#EmailChangeDiv input[ name=\'email\' ] ').val(),
+                            code:$('#EmailChangeDiv input[ name=\'EVerifyCode\' ] ').val()
+                        },
+                        success: function (result) {
+                            alert(result.msg)
+                            if (result.success) {
+                                $('#userDetail input[ name=\'email\' ] ').val($('#EmailChangeDiv input[ name=\'email\' ] ').val())
+                                form.render();
+                                layer.close(layer.index)
+                            }
+                            
+                            
+                        }
+
+                    })
+
+                }
+
+            })
+        })
+        
+        
+        
+        
+    })
+
+</script>

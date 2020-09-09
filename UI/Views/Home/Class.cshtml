@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Class";
+}
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>夹具管理</cite></a>
+        <a><cite>夹具类库</cite></a>
+    </span>
+</div>
+<br />
+<br />
+<div class="layui-inline" id="searchKeyword" style="margin-left:5px;">
+    <input type="text" autocomplete="off" id="keyword" placeholder=" 代码|名称|模组|料号|用途..." class="layui-input">
+</div>
+<div class="layui-btn-group inoutTable">
+    <button id="searchToolType" data-type="reload" class="layui-btn layui-btn-radius demo" style="background-color:#009688;margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询类别</button>
+    <button id="addToolType" class="layui-btn layui-btn-radius demo" style="background-color:#FF9800;margin-left:20px;"><i class="layui-icon layui-icon-addition"></i>添加类别</button>
+    <button id="batchDel" class="layui-btn layui-btn-radius" style="background-color:#FF5157;margin-left:20px;"><i class="layui-icon layui-icon-subtraction"></i>批量删除</button>
+</div>
+<br />
+
+<script type="text/html" id="tbar">
+    <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="Edit"><i class="layui-icon"></i> 修改</button>
+    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="Del"><i class="layui-icon"></i> 删除</button>
+</script>
+
+<style>
+    .layui-table-cell .layui-form-checkbox[lay-skin="primary"] {
+        transform: translateY(20%);
+    }
+</style>
+
+@*数据表*@
+<table class="layui-table" id="toolTypeTable" lay-filter="jsTabel"></table>
+@Styles.Render("~/Content/css")
+<script type="text/javascript">
+
+    layui.use('table', function () {
+        var table = layui.table;
+        var $ = layui.$;
+        var form = layui.form;
+        table.render({
+            elem: '#toolTypeTable'
+            , height: 510
+            , url: "@Url.Action("GetToolTypeList","ToolManage")"//数据接口
+            , page: true //开启分页
+             , where: { keyword: $("#keyword").val() }
+            , cols: [[
+                { type:"checkbox" },
+                { field: 'code', title: '代码', width: 150, sort: true },
+                { field: 'name', title: '名称', width: 150, sort: true },
+                { field: 'model', title: '模组', width: 150, sort: true },
+                { field: 'partNo', title: '料号', width: 150, sort: true },
+                { field: 'usedFor', title: '用途', width: 150, sort: true },
+                { field: 'ulp', title: '每条生产线需要数量', width: 150, sort: true },
+                { field: 'pmPeriod', title: '保养点检周期', width: 150, sort: true },
+                { title: '操作', width: 180, toolbar: "#tbar" }
+            ]]
+        });
+
+        $("#addToolType").on("click", function () {
+            layer.open({
+                type: 2,
+                content: '@Url.Action("ToolTypeDetail","ToolManage")',
+                title: "添加类别",
+                area: ["700px", "700px"],
+                end: function () { // layui 关闭弹框时的回调函数
+                    layer.closeAll();
+                    $("#searchToolType").click();
+                }
+            })
+        });
+
+        $("#searchToolType").on("click", function () {
+            //console.log($("#keyword").val());
+            table.reload("toolTypeTable", {
+                url:'@Url.Action("GetToolTypeList","ToolManage")',
+                page: { curr: 1 },
+                where: {
+                    keyword: $("#keyword").val()
+                }
+            });
+        })
+
+        $("#batchDel").on("click", function () {
+            var selectedobjs = table.checkStatus("toolTypeTable").data;
+
+            var typeIds = selectedobjs.map(function (item) {
+                return item.typeId;
+            })
+            console.log(typeIds);
+
+            if (!typeIds || typeIds.length <= 0) {
+                    return false;
+                }
+                layer.confirm("确认批量删除吗？", function () {
+
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                      $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("BatchDelToolTypes","ToolManage")",
+                        data: { typeIds: typeIds },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                $("#searchToolType").click();
+                                layer.msg(result.Message, {icon:1});
+                            }
+                            else
+                            {
+                                layer.msg(result.Message, { icon:5 });
+                            }
+                        }
+                    })
+                })
+            })
+
+        table.on("tool(jsTabel)", function (obj) {
+            var event = obj.event;
+            var data = obj.data;
+            if (event == "Edit") {
+                layer.open({
+                    type: 2,
+                    content: '@Url.Action("ToolTypeDetail","ToolManage")?typeId=' + data.typeId,
+                    title: "修改夹具种类",
+                    area: ["700px", "700px"],
+                    end: function () { // layui 关闭弹框时的回调函数
+                        $("#searchToolType").click();
+                    }
+                })
+
+            } else if (event = "Del") {
+                var typeId = data.typeId;
+                layer.confirm("确认删除吗？", function () {
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DelToolType","ToolManage")",
+                        data: { typeId: typeId },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                $("#searchToolType").click();
+                                layer.msg(result.Message, { icon: 1 });
+                            }
+                            else {
+                                layer.msg(result.Message, { icon: 5 });
+                            }
+                        }
+                    })
+                })
+
+            }
+        })
+    });
+</script>
+<div id="pagesplit" style="margin:auto auto auto 200px;"></div>

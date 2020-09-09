@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 工夹具全寿命智能管理系统</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/layui")
+
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo" style="color:white">工夹具全寿命智能管理系统</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                        超级管理员
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="../Home/Person">基本资料</a></dd>
+                        @*<dd><a href="">安全设置</a></dd>*@
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">退出</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="test">
+                    <li class="layui-nav-item">
+                        <a class="" href="javascript:;"><i class="layui-icon layui-icon-transfer"></i> 夹具管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>@Html.ActionLink("夹具类表", "Class", "Home")</dd>
+                            <dd>@Html.ActionLink("出入库管理", "Inout", "Home")</dd>
+                            <dd>@Html.ActionLink("采购及报修", "Purchase", "Home")</dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-email"></i> 工单管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>@Html.ActionLink("处理工单", "Handle", "Home")</dd>
+                            <dd>@Html.ActionLink("审核工单", "Verify", "Home")</dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-notice"></i> 预警管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>@Html.ActionLink("实时数据", "Data", "Home")</dd>
+                            <dd>@Html.ActionLink("智能分析", "Analysis", "Home")</dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 个人管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>@Html.ActionLink("个人信息", "Person", "Home")</dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-group"></i>  管理员管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>@Html.ActionLink("人员列表", "Admin", "Home")</dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+
+            <script>
+                layui.use('element', function () {
+                    var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+                    //监听导航点击
+                    element.on('nav(test)', function (elem) {
+                        console.log(elem)
+                        layer.msg(elem.text());
+                    });
+                });
+            </script>
+        </div>
+
+        <div class="layui-body" style="position:absolute;">
+            <!-- 内容主体区域 -->
+
+            @RenderBody()
+
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            @DateTime.Now.Year - 工夹具全寿命智能管理系统
+        </div>
+    </div>
+<script>
+    layui.use('layer', function(){
+  var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+  
+  //触发事件
+  var active = {
+    save: function(){
+      layer.msg('已保存');
+      }
+      , cancel: function () {
+          layer.msg('已取消');
+      }
+  };
+  $('.demo').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+
+</body>
+
+@*夹具入库*@
+<div id="in" style="display: none;padding: 20px;">
+    <div class="layui-card-body">
+        <br />
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">夹具名称：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入名称" autocomplete="off" lay-verify="name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">夹具序号：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入序号" autocomplete="off" lay-verify="number">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">Family：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入Family" autocomplete="off" lay-verify="family">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">上传图片：</label>
+                <div class="layui-upload-drag" id="test9">
+                    <i class="layui-icon">&#xe67c;</i>
+                    <p>点击上传，或将文件拖拽到此处</p>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">PartNo：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入PartNo" autocomplete="off" lay-verify="partno">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">详细内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" placeholder="请输入内容"></textarea>
+                </div>
+            </div>
+
+        </form>
+
+        <br />
+
+        @*btn*@
+    <div style="text-align:center">
+        <button class="layui-btn layui-btn-normal layui-btn-radius demo" type="button" data-type="save">保存并提交</button>
+        <button class="layui-btn layui-btn-primary layui-btn-radius demo" type="button" data-type="cancel">取消</button>
+    </div>
+
+    </div>
+    <script>
+        layui.use('upload', function () {
+            var $ = layui.jquery
+                , upload = layui.upload;
+
+
+            upload.render({
+                elem: '#test9'
+                , url: ''
+                , done: function (res) {
+                    console.log(res);
+                }
+            });
+
+        });
+    </script>
+</div>
+
+@*添加类别*@
+<div id="addClass" style="display: none;padding: 20px;">
+    <div class="layui-card-body">
+        <br />
+
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">类别名称：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入名称" autocomplete="off" lay-verify="name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">编号：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入编号" autocomplete="off" lay-verify="number">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">Workshell：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入部门" autocomplete="off" lay-verify="workshell">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">Model：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入Model" autocomplete="off" lay-verify="email">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">详细内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" placeholder="请输入内容"></textarea>
+                </div>
+            </div>
+
+        </form>
+
+        <br />
+        <br />
+        <br />
+        @*btn*@
+    <div style="text-align:center">
+        <button class="layui-btn layui-btn-normal layui-btn-radius demo" type="button" data-type="save">保存并提交</button>
+        <button class="layui-btn layui-btn-primary layui-btn-radius demo" type="button" data-type="cancel">取消</button>
+    </div>
+
+    </div>
+</div>
+
+@*添加人员*@
+<div id="addPeople" style="display: none;padding: 20px;">
+    <div class="layui-card-body">
+        <br />
+
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">姓名：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入姓名" autocomplete="off" lay-verify="name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">工号：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入工号" autocomplete="off" lay-verify="number">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">Workshell：</label>
+                <div class="layui-input-block">
+                    <input name="title" class="layui-input" type="text" placeholder="请输入部门" autocomplete="off" lay-verify="workshell">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100px">备注内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" placeholder="请输入备注内容"></textarea>
+                </div>
+            </div>
+
+        </form>
+        <br />
+        <br />
+        <br />
+        @*btn*@
+        <div style="text-align:center">
+            <button class="layui-btn layui-btn-normal layui-btn-radius demo" type="button" data-type="save">保存并提交</button>
+            <button class="layui-btn layui-btn-primary layui-btn-radius demo" type="button" data-type="cancel">取消</button>
+        </div>
+
+    </div>
+</div>
+</html>

@@ -1,0 +1,288 @@
+﻿
+@{
+    ViewBag.Title = "WorkCell";
+}
+@*已更新--2020.4.17*@
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>管理员管理</cite></a>
+        <a><cite>部门管理</cite></a>
+    </span>
+</div>
+<br />
+<br />
+
+@*search*@
+
+<div class="search-outer">
+    @*<label class="layui-form-label" style="width:auto">
+
+        </label>*@
+    <div class="layui-input-inline" style="margin-left:20px;">
+        <div class="layui-btn-group inoutTable">
+            <button class="layui-btn layui-btn-radius demo" data-type="add" style="background-color:#FF9800;margin-left:20px;" id="addWorkcell"><i class="layui-icon layui-icon-addition"></i>新增</button>
+        </div>
+    </div>
+
+    <div class="layui-input-inline" style="margin-left:20px;">
+        <input class="layui-input" id="searchInput" placeholder="输入部门" />
+    </div>
+    <button class="layui-btn layui-btn-sm" id="search">查询</button>
+
+
+</div>
+<br />
+<br />
+<table class="layui-hide" id="workcellTable" lay-filter="workcellTable"></table>
+
+
+<div id="pagesplit" style="margin:auto auto auto 100px;"></div>
+@*table的toolbar*@
+<script id="barInout" type="text/html">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+
+    layui.use(['table','layer','form'], function () {
+    var table = layui.table;
+     var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    var form = layui.form;
+    //监听表格复选框选择
+
+    //渲染userTable表
+    table.render({
+        elem: "#workcellTable",
+        //height: 330,
+        url: "@Url.Action("GetWorkCellInfo","WorkCell")",
+        page: true,//开启分页
+        where:
+        {
+            keywords:$('#searchInput').val()
+        },
+        cols:
+            [
+                [
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'name', title: '部门名', align: 'center' }
+                    , {
+                        field: 'date', title: '创建时间', align: 'center'
+                    }
+                    , {
+                        field: 'manager', title: '部门经理', align: 'center', templet: function (obj) {
+                            if (obj.manager == null)
+                                return "无"
+                            else
+                                return obj.manager
+                        }
+                    }
+                    , { field: 'count', title: '部门人数', align: 'center' }
+                    , { fixed: 'right', title: '操作', toolbar: '#barInout', align: 'center' },
+                ]
+            ]
+        ,id:'workcellTable'
+
+    })
+
+    //点击查询事件
+    $('#search').on('click', function () {
+    table.reload('workcellTable', {
+        url:"@Url.Action("GetWorkCellInfo","WorkCell")",
+        page: { curr: 1 },
+        where: { keywords: $('#searchInput').val() }
+    });
+        $('#searchInput').val("");
+        //window.location.reload();
+    })
+
+    //
+    table.on('tool(workcellTable)', function (obj) {
+        var data = obj.data;
+        //编辑部门信息
+        if (obj.event == 'del') {
+            var workcellUserList
+            var workcellUserCount
+              $.ajax({
+                type: "POST",
+                url: "@Url.Action("WUserList","WorkCell")",
+                async: false,
+                data:
+                {
+                    workcellid:data.id
+                },
+                  success: function (data) {
+                     console.log(data.list);
+                     workcellUserList = data.list;
+                     workcellUserCount = workcellUserList.length;
+                     
+                }
+              })
+            
+            layer.open({
+                type: 1
+                , content: '<div style="padding: 20px 100px;">确定删除该部门,并删除部门下 ' + workcellUserCount+'位成员?</div>'
+                , btn: ['查看成员列表', '确定删除','取消']
+                , btnAlign: 'c' //按钮居中
+                , shade: 0 //不显示遮罩
+                , btn1: function () {
+                    //显示成员列表
+                    var OutStr = '';
+                    if (workcellUserCount == 0) {
+                        OutStr = '无'
+                    }
+                    else {
+                        for (var i = 0; i < workcellUserCount; i++) {
+                        OutStr += workcellUserList[i].name + '(' + workcellUserList[i].classification + ')' + `<br/>`
+                        }
+                    }
+                    
+                    layer.msg(OutStr, {
+                                            btn: ['好的'], end: function (index) { layer.close(index); }
+                                        });
+                    
+                },btn2: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DeleteWorkcellAndUsers","WorkCell")",
+                        data:
+                        {
+                            id: data.id
+                        },
+                        success: function (result) {
+
+                            layer.msg(result.msg, {
+                                btn: ['好的'], end: function () { parent.layer.closeAll(); }
+                            });
+                            $('#search').click();
+                        }
+
+                    })
+                }
+                ,btn3: function () {
+                    layer.closeAll();
+                }
+
+
+
+            })
+        }
+
+
+
+    })
+
+
+
+    
+});
+
+
+</script>
+
+
+<script>
+//新建部门
+    layui.use(['layer','form'], function () {
+    var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    var form = layui.form;
+
+        form.on('select(sworkcell)', function (data) {
+            console.log($("select[name=workcell").val())
+    	    $.ajax({
+                type: "POST",
+                url: "@Url.Action("UserList","WorkCell")",
+                async: false,
+                data:
+                {
+                    workcellid:$("select[name=workcell").val()
+                },
+                success: function (data) {
+                    userlist = data.users;
+                    console.log(userlist)
+                    strHtml = ``
+                    debugger;
+                    for (let i = 0; i < userlist.length; i++)
+                    {
+                        strHtml += `<option value="${userlist[i].id}">${userlist[i].name}</option>`
+                    }
+                    $("select[name=userid]").empty();
+                    $("select[name=userid]").append(strHtml);
+                    form.render('select')
+                }
+            })
+    	});
+
+
+        $('#addWorkcell').click(function () {
+
+        //加载部门列表
+        $.ajax({
+            type: "GET",
+            async: false,//同步进行
+            url: "@Url.Action("WorkcellList","User")",
+            success: function (data) {
+
+                workcelllist = data;
+                
+                strHtml = ``
+                for (let i = 0; i < workcelllist.length; i++) {
+                    strHtml += `<option value="${workcelllist[i].id}">${workcelllist[i].name}</option>`
+                }
+                $("#sworkcell").append(strHtml);
+                form.render();
+                //加载对应部门的用户
+
+            }
+        })
+
+
+        layer.open({
+            type: 1,
+            area: ['400px', '600px'],
+            shadeClose: true, //点击遮罩关闭
+            title: '新增部门',
+            content: $('#workcellUpdate'),
+            success: function (layero, index) {
+
+                form.on('submit(Submit)', function (obj) {
+                    var workcell = obj.field;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("CreateWorkcell","WorkCell")",
+                        data:
+                        {
+                            name: workcell.name,
+                            userid: workcell.userid
+                        },
+                        success: function (result) {
+                            layer.msg(result.msg, { btn: ['好的'],end: function () {parent.layer.closeAll();}
+                            });
+                            $('#search').click();
+                        }
+
+                    })
+                });
+            },
+            end: function () {
+
+                $('#workcellUpdate input[ name=\'name\' ] ').val("");
+                $('#username').empty();
+                $('#sworkcell').empty();
+                form.render();
+            }
+        });
+    });
+
+
+
+});
+</script>
+
+
+
+
+
+

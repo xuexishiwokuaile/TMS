@@ -1,0 +1,26 @@
+D:\大三上\大创及服创\UI\TMS.Helper\bin\Debug\TMS.Helper.dll
+D:\大三上\大创及服创\UI\TMS.Helper\bin\Debug\TMS.Helper.pdb
+D:\大三上\大创及服创\UI\TMS.Helper\obj\Debug\TMS.Helper.dll
+D:\大三上\大创及服创\UI\TMS.Helper\obj\Debug\TMS.Helper.pdb
+D:\大三上\大创及服创\UI\TMS.Helper\bin\Debug\System.Drawing.Common.dll
+D:\大三上\大创及服创\UI\TMS.Helper\obj\Debug\TMS.Helper.csproj.CopyComplete
+D:\大三上\大创及服创\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.dll
+D:\大三上\大创及服创\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.xml
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\bin\Debug\TMS.Helper.dll
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\bin\Debug\TMS.Helper.pdb
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.dll
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\bin\Debug\System.Drawing.Common.dll
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.xml
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\obj\Debug\TMS.Helper.csprojAssemblyReference.cache
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\obj\Debug\TMS.Helper.csproj.CopyComplete
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\obj\Debug\TMS.Helper.dll
+D:\Program Files\Tecent\Tencent Files\892995826\FileRecv\UI2.0\UI\TMS.Helper\obj\Debug\TMS.Helper.pdb
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\bin\Debug\TMS.Helper.dll
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\bin\Debug\TMS.Helper.pdb
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.dll
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\bin\Debug\System.Drawing.Common.dll
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\bin\Debug\Newtonsoft.Json.xml
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\obj\Debug\TMS.Helper.csprojResolveAssemblyReference.cache
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\obj\Debug\TMS.Helper.csproj.CoreCompileInputs.cache
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\obj\Debug\TMS.Helper.dll
+E:\1243099336\FileRecv\4.22版本\4.22版本\UI\TMS.Helper\obj\Debug\TMS.Helper.pdb

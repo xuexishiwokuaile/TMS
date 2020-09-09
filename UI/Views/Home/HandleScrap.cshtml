@@ -1,0 +1,295 @@
+﻿
+@{
+    ViewBag.Title = "HandleScrap";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>工单管理</cite></a>
+        <a><cite>处理工单</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+
+<form class="layui-form" action="">
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="all">全部</button>
+            <button class="layui-btn layui-btn-sm" style="background-color:orange" lay-event="pending">待处理</button>
+            <button class="layui-btn layui-btn-sm" style="background-color:green" lay-event="resolved" >处理已通过</button>
+			<button class="layui-btn layui-btn-sm" style="background-color:red" lay-event="rejected" >处理未通过</button>
+        </div>
+	</script>
+</form>
+
+<br />
+<br />
+
+
+<div class="layui-btn-group" style="margin-left:20px;">
+    <button class="layui-btn layui-btn-radius" data-type="in" style="background-color:green;margin-left:20px;" id="handlePass"><i class="layui-icon layui-icon-ok"></i>处理通过</button>
+	<button class="layui-btn layui-btn-radius" data-type="in" style="background-color:orange;margin-left:20px;" id="handleFail"><i class="layui-icon layui-icon-close"></i>处理不通过</button>
+    <button class="layui-btn layui-btn-radius" data-type="out" style="background-color:#FF5157;" id="batchDelete"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+</div>
+<br />
+<br />
+
+
+<div class="layui-form-item" style="margin-left:20px;width:1000px;">
+    <table class="layui-table" lay-filter="handle" style="margin-left:100px;width:auto;" id="scrapOrderTable"></table>
+</div>
+
+<script id="handleState" type="text/html">
+    <input type="checkbox" name="handle" value="" lay-skin="switch" lay-text="未处理|已处理" lay-filter="handleState" >
+</script>
+
+<script id="btnEdit" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+<script>
+	function reloadTable()
+	{
+		layui.use('table', function () {
+			var table = layui.table;
+			var $ = layui.$;
+			var form = layui.form;
+
+			table.reload('scrapOrderTable',{
+				url: "@Url.Action("GetScrapOrderList","ScrapOrder")"
+				, page: true
+				, cols: [[
+					{ type:"checkbox" },
+					{ field: 'proposerName', title: '申请人', width: 150, sort: true },
+					{ field: 'supervisorName', title: '监督员', width: 150, sort: true },
+					{ field: 'managerName', title: '经理', width: 150, sort: true },
+					{ field: 'toolId', title: '夹具id', width: 150, sort: true },
+					{ field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+					{ field: 'description', title: '报废原因', width: 150, sort: true },
+				]]
+            
+			});
+		});
+	}
+
+    layui.use('table', function () {
+        var table = layui.table;
+        var $ = layui.$;
+        var form = layui.form;
+
+        table.render({
+            elem: '#scrapOrderTable'
+            , url: "@Url.Action("GetScrapOrderList","ScrapOrder")"
+			, page: true
+			, toolbar: '#toolbarDemo'
+            , cols: [[
+                { type:"checkbox" },
+                { field: 'proposerName', title: '申请人', width: 150, sort: true },
+				{ field: 'supervisorName', title: '监督员', width: 150, sort: true },
+				{ field: 'managerName', title: '经理', width: 150, sort: true },
+				{ field: 'toolId', title: '夹具id', width: 150, sort: true },
+				{ field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+				{ field: 'description', title: '报废原因', width: 150, sort: true },
+				{ field: 'dealerId', title: '状态', width: 150, sort: true, templet: '#status'}
+            ]]
+            
+        });
+
+		table.on('toolbar(handle)',function(obj){
+			switch(obj.event)
+			{
+				case 'all':
+					reloadTable();
+					break;
+				case 'pending':
+					layui.use('table', function () {
+						var table = layui.table;
+						var $ = layui.$;
+						var form = layui.form;
+
+						table.reload('scrapOrderTable',{
+							url: "@Url.Action("GetScrapOrderListPending","ScrapOrder")"
+							, page: true
+							, cols: [[
+								{ type:"checkbox" },
+								{ field: 'proposerName', title: '申请人', width: 150, sort: true },
+								{ field: 'supervisorName', title: '监督员', width: 150, sort: true },
+								{ field: 'managerName', title: '经理', width: 150, sort: true },
+								{ field: 'toolId', title: '夹具id', width: 150, sort: true },
+								{ field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+								{ field: 'description', title: '报废原因', width: 150, sort: true },
+							]]
+            
+						});
+					});
+					break;
+				case 'resolved':
+					layui.use('table', function () {
+						var table = layui.table;
+						var $ = layui.$;
+						var form = layui.form;
+
+						table.reload('scrapOrderTable',{
+							url: "@Url.Action("GetScrapOrderListResolved","ScrapOrder")"
+							, page: true
+							, cols: [[
+								{ type:"checkbox" },
+								{ field: 'proposerName', title: '申请人', width: 150, sort: true },
+								{ field: 'supervisorName', title: '监督员', width: 150, sort: true },
+								{ field: 'managerName', title: '经理', width: 150, sort: true },
+								{ field: 'toolId', title: '夹具id', width: 150, sort: true },
+								{ field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+								{ field: 'description', title: '报废原因', width: 150, sort: true },
+							]]
+            
+						});
+					});
+					break;
+				case 'rejected':
+					layui.use('table', function () {
+						var table = layui.table;
+						var $ = layui.$;
+						var form = layui.form;
+
+						table.reload('scrapOrderTable',{
+							url: "@Url.Action("GetScrapOrderListRejected","ScrapOrder")"
+							, page: true
+							, cols: [[
+								{ type:"checkbox" },
+								{ field: 'proposerName', title: '申请人', width: 150, sort: true },
+								{ field: 'supervisorName', title: '监督员', width: 150, sort: true },
+								{ field: 'managerName', title: '经理', width: 150, sort: true },
+								{ field: 'toolId', title: '夹具id', width: 150, sort: true },
+								{ field: 'lifeCount', title: '寿命计数', width: 150, sort: true },
+								{ field: 'description', title: '报废原因', width: 150, sort: true },
+							]]
+            
+						});
+					});
+					break;
+			}
+		});
+
+		$("#batchDelete").on("click", function () {
+            var selectedobjs = table.checkStatus("scrapOrderTable").data;
+     
+            var scrapIds = selectedobjs.map(function (item) {
+                return item.scrapId;
+            })
+
+
+            if (!scrapIds || scrapIds.length <= 0) {
+                    return false;
+            }
+
+                layer.confirm("确认批量删除吗？", function () {
+
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                      $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("BatchDelScrapOrders","ScrapOrder")",
+                        data: { scrapIds: scrapIds },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                layer.msg(result.Message, {icon:1});
+								reloadTable();
+                            }
+                            else
+                            {
+                                layer.msg(result.Message, { icon:5 });
+                            }
+                        }
+                    })
+                })
+            })
+
+
+		$("#handlePass").on("click", function () {
+            var selectedobjs = table.checkStatus("scrapOrderTable").data;
+     
+            var scrapIds = selectedobjs.map(function (item) {
+                return item.scrapId;
+            })
+
+
+            if (!scrapIds || scrapIds.length <= 0) {
+                    return false;
+            }
+
+                layer.confirm("确认批量处理通过吗？", function () {
+
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                      $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("BatchHandlePassScrapOrders","ScrapOrder")",
+                        data: { scrapIds: scrapIds },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                layer.msg(result.Message, {icon:1});
+								reloadTable();
+                            }
+                            else
+                            {
+                                layer.msg(result.Message, { icon:5 });
+                            }
+                        }
+                    })
+                })
+            })
+
+		$("#handleFail").on("click", function () {
+            var selectedobjs = table.checkStatus("scrapOrderTable").data;
+     
+            var scrapIds = selectedobjs.map(function (item) {
+                return item.scrapId;
+            })
+
+
+            if (!scrapIds || scrapIds.length <= 0) {
+                    return false;
+            }
+
+                layer.confirm("确认批量处理不通过吗？", function () {
+
+                    layer.load(5, { shade: [0.5, "#5588AA"] });
+                      $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("BatchHandleFailScrapOrders","ScrapOrder")",
+                        data: { scrapIds: scrapIds },
+                        success: function (result) {
+                            layer.closeAll();
+                            if (result.Success) {
+                                layer.msg(result.Message, {icon:1});
+								reloadTable();
+                            }
+                            else
+                            {
+                                layer.msg(result.Message, { icon:5 });
+                            }
+                        }
+                    })
+                })
+            })
+
+        //监听状态操作
+        form.on('checkbox(handleState)', function (obj) {
+            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+        });
+    });
+</script>
+
+<script type="text/html" id="status">
+	{{# if(d.state == -1){ }}
+	<div style="color: orange;">{{ "待处理" }}</div>
+	{{# }else if(d.state == 2){ }}
+	<div style="color: red;">{{ "未通过" }}</div>
+	{{# }else if(d.state == 0){ }}
+	<div style="color: green;">{{ "已通过" }}</div>
+	{{# } }}
+</script>

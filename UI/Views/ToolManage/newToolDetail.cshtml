@@ -1,0 +1,251 @@
+﻿
+@{
+    ViewBag.Title = "newToolDetail";
+    Layout = null;
+}
+
+@Styles.Render("~/Content/css")
+    <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="toolId">
+            </div>
+        </div>
+        @*<div class="layui-form-item">
+            <label class="layui-form-label">夹具类选择</label>
+            <div class="layui-input-inline">
+                <select name="toolType" lay-filter="type" id="type" lay-verify="" autocomplete="off">
+                    <option value="">所有夹具类</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+        </div>*@
+    <div class="layui-form-item">
+        <label class="layui-form-label">夹具类选择</label>
+        <div class="layui-input-inline">
+            <select id="toolType" name="toolType" class="toolType" lay-filter="toolType">
+            </select>
+        </div>
+        <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+    </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">序列号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="seqId" lay-verify="required" placeholder="请输入夹具序列号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请务必填写夹具序列号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="billNo" lay-verify="" placeholder="请输入夹具订单号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具订单号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">经办人</label>
+            <div class="layui-input-inline">
+                <input type="text" name="operatorId" lay-verify="" placeholder="请输入操作人ID" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请输入经办人ID</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">入库时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="regDate" lay-verify="" placeholder="请输入夹具入库时间" autocomplete="off" class="layui-input" id="date1">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具入库时间</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">生产时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="proDate" lay-verify="" placeholder="请输入夹具生产时间" autocomplete="off" class="layui-input" id="date2">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具生产时间</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">存放库位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="location" lay-verify="" placeholder="请输入夹具存放库位" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具存放库位</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">使用次数</label>
+            <div class="layui-input-inline">
+                <input type="text" name="usedCount" lay-verify="" placeholder="请输入使用次数" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写保养点检周期</div>
+        </div>
+        @*<div class="layui-form-item">
+            <label class="layui-form-label">图片</label>
+            <div class="layui-input-inline">
+                <input type="text" name="picUrl" lay-verify="" placeholder="图片" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请添加夹具图片</div>
+        </div>*@
+        <div class="layui-form-item">
+            <div class="layui-upload">
+                <label class="layui-form-label">上传图片</label>
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-upload">
+                <div class="layui-upload-list">
+                    <label class="layui-form-label">预览区</label>
+                    <img class="layui-upload-img" id="demo2" style="width:300px;height:auto;">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button onclick="parent.layer.closeAll()" class="layui-btn layui-btn-primary">关闭</button>
+            </div>
+        </div>
+    </form>
+@Scripts.Render("~/bundles/layui")
+<script type="text/javascript">
+	layui.use('laydate', function(){
+	  var laydate = layui.laydate;
+  
+	  //执行一个laydate实例
+	  laydate.render({
+		elem: '#date1', //指定元素
+	  });
+	});
+
+	layui.use('laydate', function(){
+	  var laydate = layui.laydate;
+  
+	  //执行一个laydate实例
+	  laydate.render({
+		elem: '#date2', //指定元素
+	  });
+	});
+	
+    layui.use(['layer','form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+        var imageUrl;//新增代码，保存上传图片后回传的图片路径
+        form.on("submit(sub)", function (obj) {
+
+            var toolDetail = obj.field;
+            console.log(toolDetail);
+            layer.load(5, { shade: [0.5, "#5588AA"] });
+
+            $.ajax({
+                type: "POST",
+                data: {
+                    toolDetail: toolDetail,
+                    picUrl:imageUrl
+                },
+                url: "@Url.Action("SubToolDetail","ToolManage")",
+                success: function (result) {
+                    //layer.closeAll();
+                    if (result.Success) {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                        parent.layer.msg(result.Message, { icon: 1 });
+                        //parent.layer.closeAll();
+                    }
+                    else {
+                        parent.layer.msg(result.Message, { icon: 5 });
+                    }
+                }
+            })
+        });
+
+                //用来记录当前选择夹具类的
+        var toolType;
+        @*form.on('select(type)', function (data) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelectToolTypeCode","ToolManage")",//从数据库查询现有的夹具类
+                dataType:"json",
+                success: function (result) {
+                    //console.log(result.data);
+                    //第一个是索引，第二个是每项
+                    $.each(result.data, function (index, item) {
+                        //console.log(item);
+                        $('#type').append("<option value= '" + item.typeId + "'>" + item.code + "</option>");
+                    })
+                    form.render("select");//菜单渲染
+                }
+            })
+            toolType = data.value;
+            //得到id
+            console.log(data.value);
+
+        });*@
+        layer.ready(function (data) {
+        //新加载列表
+            $.ajax({
+                type: "GET",
+                async: false,//同步进行
+                url: "@Url.Action("SelectToolTypeCodeList","ToolManage")",
+                success: function (data) {
+
+                    toolTypeList = data;
+                
+                    strHtml = ``
+                    for (let i = 0; i < toolTypeList.length; i++) {
+                        strHtml += `<option value="${toolTypeList[i].typeId}">${toolTypeList[i].code}</option>`
+                    }
+                    $("#toolType").append(strHtml);
+                    form.render();
+                    //加载对应部门的用户
+                }
+            })
+            console.log(data.value);
+
+        });
+
+
+
+        //上传图片
+        layui.use('upload', function () {
+            var $ = layui.jquery;
+            var upload = layui.upload;
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#test1',
+                url: '@Url.Action("UploadToolPic","ToolManage")',
+                before: function (obj) {
+                    obj.preview(function (index, file, result) {
+                    });
+                },
+                done: function (res) {
+                    if (res.Result) {
+　　　　　　　　　　    //新增代码，将回传的图片保存路径进行保存并将图片绑定到上传后图片展示处
+                        imageUrl = res.Data;
+                        $("#demo2").attr("src", imageUrl);
+                    }
+                },
+                error: function () {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+        });
+
+
+        var tool = '@Html.Raw(ViewBag.tool)';
+        var jsonTool = JSON.parse(tool);
+        console.log("jsonTool:" + jsonTool);
+
+        form.val("first", jsonTool);
+
+    })
+</script>
+

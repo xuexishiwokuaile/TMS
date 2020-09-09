@@ -1,0 +1,444 @@
+﻿
+@{
+    ViewBag.Title = "Admin";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>管理员管理</cite></a>
+        <a><cite>人员列表</cite></a>
+    </span>
+</div>
+<br />
+<br />
+
+@*search*@
+
+<div class="search-outer" >
+    @*<label class="layui-form-label" style="width:auto">
+
+        </label>*@
+    <div class="layui-input-inline"style="margin-left:20px;">
+        <div class="layui-btn-group inoutTable" >
+            <button class="layui-btn layui-btn-radius demo" data-type="add" style="background-color:#FF9800;margin-left:20px;" id="addUser"><i class="layui-icon layui-icon-addition"></i>新增</button>
+            <button class="layui-btn layui-btn-radius" data-type="delete" style="background-color:#FF5157;" id="batchDelete"><i class="layui-icon layui-icon-subtraction"></i>批量删除</button>
+        </div>
+    </div>
+
+    <div class="layui-input-inline" style="margin-left:20px;">
+        <input class="layui-input" id="searchInput" placeholder="输入姓名" />
+    </div>
+    <button class="layui-btn layui-btn-sm" id="search">查询</button>
+   
+
+</div>
+<br />
+<br />
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+
+
+<div id="pagesplit" style="margin:auto auto auto 100px;"></div>
+@*table的toolbar*@
+<script id="barInout" type="text/html">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{#  if(d.state ==1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="forbidOrRestart" >禁用</a>
+    {{#  } }}
+    {{#  if(d.state == 0){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="forbidOrRestart" >启用</a>
+    {{#  } }}
+</script>
+
+<script>
+   
+    layui.use(['table','layer','form'], function () {
+    var table = layui.table;
+     var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    var form = layui.form;
+    //监听表格复选框选择
+
+    //渲染userTable表
+    table.render({
+        elem: "#userTable",
+        //height: 330,
+        url: "@Url.Action("GetUserInfo","User")",
+        page: true,//开启分页
+        where:
+        {
+            keywords:$('#searchInput').val()
+        },
+        cols:
+            [
+                [
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'name', title: '姓名', width: 100, align: 'center' }
+                    , { field: 'telnumber', title: '电话号码', width: 150, align: 'center' }
+                    , { field: 'apartment', title: '住址', width: 100, align: 'center' }
+                    , {
+                        field: 'gender', title: '性别', width: 50, align: 'center', templet: function (obj) {
+                            switch (obj.gender) {
+                                case 1:
+                                    return "男";
+                                    break;
+                                case 0:
+                                    return "女";
+                                    break;
+                                default:
+                                    return "UNKNOW";
+                            }
+                        }
+                    }
+                    , { field: 'workcell', title: '工作部门', width: 140, align: 'center' }
+                    , {
+                        field: 'state', title: '状态', width: 60, align: 'center', templet: function (obj) {
+                            switch (obj.state) {
+                                case 1:
+                                    return "正常";
+                                    break;
+                                case 0:
+                                    return "禁用";
+                                    break;
+                                default:
+                                    return "UNKNOW";
+                            }
+                        }
+                    }
+                    , { field: 'email', title: '邮箱', width: 200, align: 'center' }
+                    , { field: 'classification', title: '级别', width: 140, align: 'center' }
+                    , { fixed: 'right', title: '操作', toolbar: '#barInout', width: 200, align: 'center' },
+                ]
+            ]
+        ,id:'userTable'
+
+    })
+
+    //点击查询事件
+    $('#search').on('click', function () {
+    table.reload('userTable', {
+        url:"@Url.Action("GetUserInfo","User")",
+        page: { curr: 1 },
+        where: { keywords: $('#searchInput').val() }
+    });
+        $('#searchInput').val("");
+        //window.location.reload();
+    })
+
+    //
+    table.on('tool(userTable)', function (obj) {
+        var data = obj.data;
+        //编辑用户信息
+        if (obj.event == 'edit') {
+
+            var selectedUser;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUser","User")",
+                //async: false,//同步进行
+                data:
+                {
+                    id: data.id
+                },
+                success: function (result) {
+                    debugger;
+                    selectedUser = result.data;
+                    //console.log(selectedUser)
+
+                    //获取classification的id,name对用于初始化form
+                    $.ajax({
+                        type: "GET",
+                         async: false,//同步进行
+                        url: "@Url.Action("ClassificationList","User")",
+                        success: function (data) {
+
+                            classification = data;
+                            console.log(classification)
+                            strHtml = ``
+                            for (let i = 0; i < classification.length; i++) {
+                                strHtml += `<option value="${classification[i].id}">${classification[i].name}</option>`
+                            }
+                            $("#classification").append(strHtml);
+                            $("#classification").val(selectedUser.classification);
+                            form.render();
+                        }
+                    })
+                    //获取workcell的信息用于初始化form
+                    $.ajax({
+                        type: "GET",
+                        async: false,//同步进行
+                        url: "@Url.Action("WorkcellList","User")",
+                        success: function (data) {
+
+                            workcelllist = data;
+                            console.log(workcelllist)
+                            strHtml = ``
+                            for (let i = 0; i < workcelllist.length; i++) {
+                                strHtml += `<option value="${workcelllist[i].id}">${workcelllist[i].name}</option>`
+                            }
+                            $("#workcell").append(strHtml);
+                            $("#workcell").val(selectedUser.workcellid);
+                            form.render();
+                        }
+                    })
+                    $('#userUpdate input[ name=\'id\' ] ').val(selectedUser.id);
+                    $('#userUpdate input[ name=\'name\' ] ').val(selectedUser.name);
+                    
+                    $('#userUpdate input[ name=\'phone\' ] ').val(selectedUser.phone);
+                    $('#userUpdate input[ name=\'email\' ] ').val(selectedUser.email);
+                    $('#userUpdate input[ name=\'apartment\' ] ').val(selectedUser.apartment);
+                    form.render();
+
+
+                    layer.open({
+                        type: 1,
+                        area: ['400px', '600px'],
+                        shadeClose: true, //点击遮罩关闭
+                        title: '修改用户信息',
+                        content: $('#userUpdate'),
+                        success: function (layero, index) {
+
+                            form.on('submit(saveAndSubmit)', function (obj) {
+                                var user = obj.field;
+                                console.log(user)
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("UpdateUser","User")",
+                                    data:
+                                    {
+                                        user: user
+                                    },
+                                    success: function (result) {
+
+                                        layer.msg(result.msg, {
+                                            btn: ['好的'], end: function () { parent.layer.closeAll(); }
+                                        });
+                                        $('#search').click();
+                                    }
+
+                                })
+                            });
+                        },
+                        end: function () {
+
+                            $('#userUpdate input[ name=\'id\' ] ').val("");
+                            $('#userUpdate input[ name=\'name\' ] ').val("");
+                   
+                            $('#classification').empty();
+                            $('#workcell').empty();
+                            $('#userUpdate input[ name=\'phone\' ] ').val("");
+                            $('#userUpdate input[ name=\'email\' ] ').val("");
+                            $('#userUpdate input[ name=\'apartment\' ] ').val("");
+                            $('#userUpdate input[ id=\'male\' ] ').prop('checked', true);
+                            form.render();
+                            debugger;
+                            console.log(document.getElementById("userUpdate").innerHTML);
+                        }
+                });
+
+                }
+
+            })
+            
+            //var classification;
+
+
+
+            //$('#userUpdate input[ id=\'male\' ] ').prop('checked', true);
+
+
+
+        } else if (obj.event == 'del') {
+            layer.open({
+                type: 1
+                , content: '<div style="padding: 20px 100px;">确定删除该用户？ </div>'
+                , btn: ['确定删除', '取消']
+                , btnAlign: 'c' //按钮居中
+                , shade: 0 //不显示遮罩
+                , btn1: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DeleteUser","User")",
+                        data:
+                        {
+                            id: data.id
+                        },
+                        success: function (result) {
+
+                            layer.msg(result.msg, {
+                                btn: ['好的'], end: function () { parent.layer.closeAll(); }
+                            });
+                            $('#search').click();
+                        }
+
+                    })
+                }, btn2: function () {
+                    layer.closeAll();
+                }
+
+
+
+            })
+        }
+        else if (obj.event == 'forbidOrRestart') {
+            //禁用或启用用户
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("forbidOrRestart","User")",
+                data:
+                {
+                    id:data.id
+                },
+                success: function (result) {
+                   
+                    if (result.success) {
+                        $('#search').click();
+
+                    }
+                    
+                }
+
+            })
+
+        }
+
+
+    })
+
+
+
+    //批量删除
+    $("#batchDelete").click(function() {
+        var checkStatus = table.checkStatus('userTable');
+        var data = checkStatus.data;
+        if (data == '') {
+        layer.msg(`请选择要删除的用户`, function() {
+            //关闭后的操作
+        });
+        } else {
+            var userIds = [];
+            var length = data.length;
+            for (let i = 0; i < length; i++) {
+                userIds[i]= data[i].id
+            }
+            layer.confirm('确定批量删除选中的' + data.length + '个用户？', function (index) {
+                $.ajax({
+                    type:'POST'
+                    , url: "@Url.Action("batchDeleteUser","User")"
+                    ,data:
+                    {
+                        idList: userIds
+
+                    },
+                    success: function (result) {
+                        layer.msg(result.msg, { btn: ['好的'],end: function () {parent.layer.closeAll();}
+                        });
+                        $('#search').click();
+                    }
+
+                }
+                )
+        });
+        }
+    });
+});
+
+
+</script>
+
+
+<script>
+//添加用户
+    layui.use(['layer','form'], function () {
+    var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+    var form = layui.form;
+    //添加用户
+    $('#addUser').click(function () {
+        var classification;
+        //获取classification的id,name对用于初始化form
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ClassificationList","User")",
+            async: false,
+            success: function (data) {
+
+                classification = data;
+                console.log(classification)
+                    strHtml = ``
+                for (let i = 0; i < classification.length; i++)
+                {
+                    strHtml += `<option value="${classification[i].id}">${classification[i].name}</option>`
+                }
+                $("#classification").append(strHtml);
+                form.render()
+            }
+        })
+        //获取workcell的信息用于初始化form
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("WorkcellList","User")",
+            async: false,
+            success: function (data) {
+                workcelllist = data;
+                console.log(workcelllist)
+                    strHtml = ``
+                for (let i = 0; i < workcelllist.length; i++)
+                {
+                    strHtml += `<option value="${workcelllist[i].id}">${workcelllist[i].name}</option>`
+                }
+                $("#workcell").append(strHtml);
+                form.render()
+            }
+        })
+        debugger;
+
+        layer.open({
+            type: 1,
+            area: ['400px', '600px'],
+            shadeClose: true, //点击遮罩关闭
+            title: '新增用户',
+            content: $('#userUpdate'),
+            success: function (layero, index) {
+                form.on('submit(saveAndSubmit)', function (obj) {
+                    var user = obj.field;
+                    console.log(user)
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("UpdateUser","User")",
+                        data:
+                        {
+                            user:user
+                        },
+                        success: function (result) {
+                            layer.msg(result.msg, { btn: ['好的'],end: function () {parent.layer.closeAll();}
+                            });
+                            $('#search').click();
+                        }
+
+                    })
+                });
+            },
+            end: function () {
+
+                $('#userUpdate input[ name=\'id\' ] ').val("");
+                $('#userUpdate input[ name=\'name\' ] ').val("");
+                $('#classification').empty();
+                $('#workcell').empty();
+                $('#userUpdate input[ name=\'phone\' ] ').val("");
+                $('#userUpdate input[ name=\'email\' ] ').val("");
+                $('#userUpdate input[ name=\'apartment\' ] ').val("");
+                $('#userUpdate input[ id=\'male\' ] ').prop('checked', true);
+                form.render();
+            }
+        });
+    });
+
+
+
+});
+</script>
+
+
+
+

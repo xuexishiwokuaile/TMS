@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "ToolTypeDetail";
+    Layout = null;
+}
+
+@Styles.Render("~/Content/css")
+    <form class="layui-form layui-form-pane1" action="" lay-filter="first">
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="typeId">
+            </div>
+        </div>
+        @*<div class="layui-form-item">
+            <label class="layui-form-label">夹具类选择</label>
+            <div class="layui-input-inline">
+                <select name="toolType" lay-filter="type" id="type" lay-verify="" autocomplete="off">
+                    <option value="">所有夹具类</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">请选择目标工夹具类</div>
+        </div>*@
+        <div class="layui-form-item">
+            <label class="layui-form-label">代码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="code" lay-verify="required" placeholder="请输入夹具代码" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请务必填写夹具代码</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" lay-verify="required" placeholder="请输入夹具名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请务必填写夹具名称</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模组</label>
+            <div class="layui-input-inline">
+                <input type="text" name="model" lay-verify="" placeholder="请输入夹具模组" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具模组</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">料号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="partNo" lay-verify="" placeholder="请输入夹具料号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具料号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用途</label>
+            <div class="layui-input-inline">
+                <input type="text" name="usedFor" lay-verify="" placeholder="请输入夹具用途" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写夹具用途</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">每条生产线需要数量</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ulp" lay-verify="" placeholder="请输入每条生产徐需要数量" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写upl</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">保养点检周期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="pmPeriod" lay-verify="" placeholder="请输入保养点检周期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">请填写保养点检周期</div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button onclick="parent.layer.closeAll()" class="layui-btn layui-btn-primary">关闭</button>
+            </div>
+        </div>
+    </form>
+@Scripts.Render("~/bundles/layui")
+<script type="text/javascript">
+    layui.use(["form"], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+
+        form.on("submit(sub)", function (obj) {
+
+            var toolType = obj.field;
+            layer.load(5, { shade: [0.5, "#5588AA"] });
+
+            $.ajax({
+                type: "POST",
+                data: {
+                    toolType: toolType
+                },
+                url: "@Url.Action("SubToolTypeDetail","ToolManage")",
+                success: function (result) {
+                    //layer.closeAll();
+                    if (result.Success) {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                        parent.layer.msg(result.Message, { icon: 1 });
+                        //parent.layer.closeAll();
+                    }
+                    else {
+                        parent.layer.msg(result.Message, { icon: 5 });
+                    }
+                }
+            })
+        });
+
+        //用来记录当前选择夹具类的
+        var toolType;
+        form.on('select(type)', function (data) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelectToolTypeCode","ToolManage")",//从数据库查询现有的夹具类
+                dataType:"json",
+                success: function (result) {
+                    //console.log(result.data);
+                    //第一个是索引，第二个是每项
+                    $.each(result.data, function (index, item) {
+                        //console.log(item);
+                        $('#type').append("<option value= '" + item.typeId + "'>" + item.code + "</option>");
+                        //$('#type').append(new Option(item.code));//往下拉菜单里添加元素
+                    })
+                    form.render("select");//菜单渲染
+                }
+            })
+            toolType = data.value;
+            //得到id
+            console.log(data.value);
+
+        });
+
+        var tool_Type = '@Html.Raw(ViewBag.tool_Type)';
+        var jsonToolType = JSON.parse(tool_Type);
+        console.log(jsonToolType);
+
+
+        form.val("first", jsonToolType);
+
+    })
+</script>
+
+

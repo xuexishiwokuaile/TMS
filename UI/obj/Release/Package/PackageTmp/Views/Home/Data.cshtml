@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "Data";
+}
+
+
+<div style="margin-left:20px;margin-top:20px;">
+    <span class="layui-breadcrumb">
+        <a href="../Home/Index"><i class="layui-icon layui-icon-home"></i>首页</a>
+        <a><cite>预警管理</cite></a>
+        <a><cite>实时数据</cite></a>
+    </span>
+</div>
+
+<br />
+<br />
+
+<div class="layui-container">
+    <div class="layui-row">
+        @*左上*@
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+            <div class="grid-demo grid-demo-bg1">
+                @*严重*@
+                <form class="layui-form layui-form-pane" style="margin-left:20px;">
+                    <div class="layui-form-item" style="width:auto;height:auto;">
+                        <label class="layui-form-label" style="background-color:#FD4D4F;height:75px;color:white;font-size:24px">
+                            <br />
+                            严重
+                        </label>
+                        <label class="layui-form-label" style="height:75px;font-size:24px;">
+                            <br />
+                            123
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @*中间*@
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+            <div class="grid-demo grid-demo-bg1">
+                @*中等*@
+                <form class="layui-form layui-form-pane" style="margin-left:20px;">
+                    <div class="layui-form-item" style="width:auto;height:auto;">
+                        <label class="layui-form-label" style="background-color:#1890FF;height:75px;color:white;font-size:24px">
+                            <br />
+                            中等
+                        </label>
+                        <label class="layui-form-label" style="height:75px;font-size:24px;">
+                            <br />
+                            12
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @*右一*@
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+            <div class="grid-demo grid-demo-bg1">
+                @*次要*@
+                <form class="layui-form layui-form-pane" style="margin-left:20px;">
+                    <div class="layui-form-item" style="width:auto;height:auto;">
+                        <label class="layui-form-label" style="background-color:#73D13D;height:75px;color:white;font-size:24px">
+                            <br />
+                            次要
+                        </label>
+                        <label class="layui-form-label" style="height:75px;font-size:24px;">
+                            <br />
+                            21
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        @*底下*@
+        <div class="layui-col-xs6 layui-col-md12">
+            <div class="grid-demo grid-demo-bg2">
+                <br />
+                <br />
+
+                <div id="bar" style="width: 500px;height: 500px;"> </div>
+            </div>
+        </div>
+
+        @*底下*@
+        <div class="layui-col-xs6 layui-col-md12">
+            <div class="grid-demo grid-demo-bg2">
+                <br />
+                <br />
+                <div class="layui-card">
+                    <div class="layui-card-header" style="background-color:#F0F0F0;">
+                        各类比例
+                    </div>
+                    <div class="layui-card-body">
+                        <div id="pie" style="width: 500px;height: 500px;"> </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="~/Content/apache-echarts-4.6.0-incubating-src/echarts.all.js"></script>
+<script src="~/Content/apache-echarts-4.6.0-incubating-src/echarts.common.js"></script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('bar')).setOption(option);
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '月预警数据记录'
+        },
+        tooltip: {},
+        legend: {
+            data: ['数量']
+        },
+        xAxis: {
+            data: ["1月", "2月", "3月", "4月", "5月", "6月"]
+        },
+        yAxis: {},
+        series: [{
+            name: '数量',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
+<script>
+    var myChart = echarts.init(document.getElementById('pie')).setOption(option);
+    var option = {
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+    },
+    legend: {
+        orient: 'vertical',
+        left: 10,
+        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+    },
+    series: [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data: [
+                {value: 335, name: '直接访问'},
+                {value: 310, name: '邮件营销'},
+                {value: 234, name: '联盟广告'},
+                {value: 135, name: '视频广告'},
+                {value: 1548, name: '搜索引擎'}
+            ]
+        }
+    ]
+    };
+    myChart.setOption(option);
+
+</script>
